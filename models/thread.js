@@ -9,6 +9,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate (models) {
       // define association here
+
+      Thread.belongsTo(models.User, { foreignKey: 'userId' })
+      Thread.belongsTo(models.Channel, { foreignKey: 'channelId' })
+
+      Thread.hasMany(models.Reply)
     }
   }
   Thread.init(
