@@ -3,6 +3,11 @@ const bcrypt = require('bcrypt')
 const { generateToken } = require('../utils')
 
 module.exports = {
+  Query: {
+    async me (parent, args, { models, authUser }) {
+      return models.User.findByPk(authUser.id)
+    }
+  },
   Mutation: {
     async signUp (parent, { username, email, password }, { models }) {
       const userExists = await models.User.findOne({ where: { email } })
