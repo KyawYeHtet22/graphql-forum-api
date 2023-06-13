@@ -6,7 +6,7 @@ module.exports = gql`
     title: String!
     slug: String!
     content: String!
-    createor: User!
+    creator: User!
     channel: Channel!
     status: ThreadStatus!
     isLocked: Boolean!
@@ -18,5 +18,9 @@ module.exports = gql`
   enum ThreadStatus {
     UNSOLVED
     SOLVED
+  }
+
+  extend type Mutation {
+    createThread(title: String!, content: String, channelId: ID): Thread!
   }
 `

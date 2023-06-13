@@ -1,5 +1,8 @@
 'use strict'
 const { Model } = require('sequelize')
+
+const SequelizeSlugify = require('sequelize-slugify')
+
 module.exports = (sequelize, DataTypes) => {
   class Thread extends Model {
     /**
@@ -30,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       slug: {
         type: DataTypes.STRING,
-        allowNull: false
+        unique: true
       },
       content: {
         type: DataTypes.TEXT,
@@ -72,5 +75,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Thread'
     }
   )
+
+  SequelizeSlugify.slugifyModel(Thread, { source: ['title'] })
   return Thread
 }
