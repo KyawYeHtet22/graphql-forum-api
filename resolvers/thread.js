@@ -10,6 +10,9 @@ module.exports = {
       }
 
       return thread
+    },
+    async threads (parent, args, { models }) {
+      return models.Thread.findAll()
     }
   },
   Mutation: {

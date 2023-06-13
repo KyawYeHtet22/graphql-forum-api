@@ -1,6 +1,6 @@
 module.exports = {
   Query: {
-    async allChannels (parent, args, { models }) {
+    async channels (parent, args, { models }) {
       return models.Channel.findAll()
     }
   }
