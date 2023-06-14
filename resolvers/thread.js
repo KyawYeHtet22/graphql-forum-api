@@ -1,4 +1,4 @@
-const { ApolloError } = require('apollo-server-express')
+const { ApolloError, ForbiddenError } = require('apollo-server-express')
 
 module.exports = {
   Query: {
@@ -22,6 +22,21 @@ module.exports = {
         userId: authUser.id,
         lastRepliedAt: new Date()
       })
+    },
+    async updateThread (
+      parent,
+      { id, title, content, channelId },
+      { models, authUser }
+    ) {
+      const thread = await models.Thread.findByPk(id)
+
+      if (authUser.id !== thread.userId) {
+        throw new ForbiddenError('You can only edit your own threads.')
+      }
+
+      await thread.update({ title, content, channelId })
+
+      return thread
     }
   },
   Thread: {
