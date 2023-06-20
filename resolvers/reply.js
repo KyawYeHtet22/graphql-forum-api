@@ -1,3 +1,5 @@
+const { ForbiddenError } = require('apollo-server-express')
+
 module.exports = {
   Mutation: {
     async createReply (parent, { threadId, content }, { models, authUser }) {
@@ -28,6 +30,36 @@ module.exports = {
       await favorite.destroy()
 
       return true
+    },
+    async markAsBestAnswer (parent, { id }, { models, authUser }) {
+      const reply = await models.Reply.findByPk(id)
+      const thread = await reply.getThread()
+
+      if (authUser.id !== thread.userId) {
+        throw new ForbiddenError(
+          'You can only mark a reply as best answer on your own threads.'
+        )
+      }
+
+      await reply.update({ isBestAnswer: true })
+      await thread.update({ isResolved: true })
+
+      return reply
+    },
+    async unmarkAsBestAnswer (parent, { id }, { models, authUser }) {
+      const reply = await models.Reply.findByPk(id)
+      const thread = await reply.getThread()
+
+      if (authUser.id !== thread.userId) {
+        throw new ForbiddenError(
+          'You can only unmark a reply as best answer on your own threads.'
+        )
+      }
+
+      await reply.update({ isBestAnswer: false })
+      await thread.update({ isResolved: false })
+
+      return reply
     }
   },
   Reply: {
