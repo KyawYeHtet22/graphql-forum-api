@@ -60,6 +60,17 @@ module.exports = {
       await thread.update({ isResolved: false })
 
       return reply
+    },
+    async updateReply (parent, { id, content }, { models, authUser }) {
+      const reply = await models.Reply.findByPk(id)
+
+      if (authUser.id !== reply.userId) {
+        throw new ForbiddenError('You can only edit your own replies.')
+      }
+
+      await reply.update({ content })
+
+      return reply
     }
   },
   Reply: {
